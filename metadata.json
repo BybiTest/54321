@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "کلمه پیچ - بازی کلمات و جدول کافه‌بازار",
+  "description": "پروژه اندروید بازی کلمات و جدول ایرانی به همراه سیستم پرداخت درون‌برنامه‌ای کافه‌بازار، تبلیغات تپسل و بیلد خودکار AAB و APK در گیت‌هاب",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

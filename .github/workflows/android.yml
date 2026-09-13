@@ -1,0 +1,47 @@
+name: Build Android APK & AAB
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK & AAB
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make Gradlew Executable
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+          fi
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
+
+      - name: Locate Generated APKs
+        run: |
+          mkdir -p output_apk
+          find app/build/outputs/apk -name "*.apk" -exec cp {} output_apk/ \;
+          echo "Found APK files:"
+          ls -la output_apk/
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kalame-Pich-Debug-APK
+          path: output_apk/*.apk
+          if-no-files-found: error
