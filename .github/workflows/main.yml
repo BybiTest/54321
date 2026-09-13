@@ -21,8 +21,25 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Grant execute permission for Gradle
-        run: chmod +x gradlew
+      - name: Grant execute permission for Gradle and Ensure Wrapper
+        run: |
+          chmod +x gradlew
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "gradle-wrapper.jar missing. Downloading Gradle wrapper..."
+            mkdir -p gradle/wrapper
+            curl -sSL "https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
+          fi
+
+      - name: Prepare Keystore for Release
+        run: |
+          if [ ! -f "release.keystore" ]; then
+            echo "Generating release keystore..."
+            keytool -genkeypair -v -keystore release.keystore -alias "bazaarkey" \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "bazaar123456" \
+              -keypass "bazaar123456" \
+              -dname "CN=KalamePich, OU=Games, O=KalamePich, L=Tehran, ST=Tehran, C=IR"
+          fi
 
       - name: Clean project
         run: ./gradlew clean

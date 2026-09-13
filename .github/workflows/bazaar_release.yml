@@ -23,10 +23,15 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Make Gradlew Executable
+      - name: Make Gradlew Executable and Ensure Wrapper
         run: |
           if [ -f "./gradlew" ]; then
             chmod +x ./gradlew
+          fi
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "gradle-wrapper.jar missing. Downloading Gradle wrapper..."
+            mkdir -p gradle/wrapper
+            curl -sSL "https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
           fi
 
       - name: Prepare Release Keystore
